@@ -151,6 +151,57 @@ What might explain the main bottleneck or the spike in [metric]? Suggest 2–3 t
       </article>
 
       <article class="prompt-card">
+        <h2>Load test plan for JMeter</h2>
+        <p>Get a JMeter test plan outline: thread groups, ramp-up, duration, samplers, and listeners.</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>We're designing a JMeter load test. Context: [e.g. REST API / web app], main flows: [e.g. login, get list, submit form].
+
+Provide a JMeter test plan structure:
+1. Thread Group: number of threads (users), ramp-up period (seconds), loop count or duration
+2. For each flow: which sampler (HTTP Request / etc.), method, path, and any body or CSV data
+3. Suggested timers: Constant Timer think time between requests (ms)
+4. Listeners to add: Summary Report, View Results Tree (for debug), and one for response time (e.g. Response Time Graph or Aggregate Report)
+5. Assertions: what to check (e.g. response code 200, response time &lt; 500 ms)
+
+Output as a numbered checklist or table. Assume we'll create the JMX in JMeter GUI or paste HTTP Request defaults.</code></pre>
+        </div>
+      </article>
+
+      <article class="prompt-card">
+        <h2>Create JMX file structure for JMeter</h2>
+        <p>Get step-by-step instructions or XML-style outline to build a JMeter test plan (JMX).</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>We need to create a JMeter JMX test plan for this scenario:
+
+[Describe: e.g. 50 users over 2 min ramp-up, run for 5 min. Three HTTP requests: GET /api/products, GET /api/product/&#123;id&#125;, POST /api/cart with JSON body. Think time 1–3 s between requests.]
+
+Output:
+1. Exact structure: Test Plan → Thread Group → (Config Element if needed) → Samplers → Timers → Listeners
+2. For each HTTP Request: name, method, server/path, body (if POST). Note where to use variables (e.g. $&#123;id&#125; from CSV or extractor)
+3. Suggested values: Thread Group (threads, ramp-up, duration), Constant Timer (ms), any CSV Data Set Config columns
+4. If you can output valid JMeter JMX XML snippet for one Thread Group with one HTTP Request, include it; otherwise give clear steps to build it in JMeter GUI so we can save as JMX.</code></pre>
+        </div>
+      </article>
+
+      <article class="prompt-card">
+        <h2>Performance testing with Postman</h2>
+        <p>Plan a Postman-based performance run: collection runner, Newman, or Postman load/flow and what to measure.</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>We want to run performance tests using Postman. We have a collection with [e.g. login, get list, create item] requests.
+
+Provide:
+1. Order of requests for a realistic flow (e.g. login first, then use token in subsequent requests)
+2. How to run for load: Postman Collection Runner (iterations, delay) vs Newman in CLI with --iteration-count and --delay-request, or Postman Flows for sequence. Which is better for [e.g. 100 iterations, 10 concurrent]?
+3. What to measure: response time per request, failed requests, and how to export or report (e.g. Newman with --reporters html, or Postman summary)
+4. Optional: one example Newman command for 50 iterations with 500 ms delay and HTML report
+5. Limits of Postman/Newman for "real" load (e.g. single process); when to use JMeter or k6 instead for high concurrency</code></pre>
+        </div>
+      </article>
+
+      <article class="prompt-card">
         <h2>UI test draft from flow description</h2>
         <p>Describe a user flow in plain language and get a Playwright (or similar) test draft with stable selectors.</p>
         <div class="prompt-block">
@@ -319,6 +370,706 @@ Suggest minimal seed data (fields + example values) in creation order. Output as
           <pre><code>API changed: [list new/removed/changed fields or endpoints].
 
 Our tests: [short description, e.g. "one file per endpoint, 200/400/401/404"]. Which tests might break? What to add (e.g. new assertions), remove, or update? Bullet list.</code></pre>
+        </div>
+      </article>
+
+      <h3 class="section-heading">Test planning &amp; management</h3>
+
+      <article class="prompt-card">
+        <h2>Test plan outline</h2>
+        <p>Get a test plan structure: scope, approach, schedule, resources, risks, and exit criteria.</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>We're writing a test plan for [product/release in 1 sentence]. Key features: [list 3–5].
+
+Provide a test plan outline with sections:
+1. Scope (in scope / out of scope)
+2. Test approach (functional, regression, API, performance—what we'll do)
+3. Test types and deliverables (test cases, automation, reports)
+4. Schedule (phases or sprint alignment)
+5. Risks and mitigations (2–3)
+6. Exit criteria (when we sign off)
+7. Environment and test data needs
+
+One paragraph or bullet list per section. No fluff.</code></pre>
+        </div>
+      </article>
+
+      <article class="prompt-card">
+        <h2>Regression test selection / prioritization</h2>
+        <p>Decide which tests to run in regression based on changes and risk.</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>This release changed: [list modules, APIs, or features]. Our full suite has [e.g. 500] tests.
+
+Suggest how to select tests for regression:
+1. Must-run (critical path, changed area, payment/auth)—list categories
+2. Should-run (related modules, integration points)
+3. Can-skip if time-boxed (low-risk, stable areas)
+4. Suggested test execution order (smoke first, then critical, then rest)
+
+Output as a short prioritization guide. Assume we have 2 hours for regression; suggest a 30-min smoke subset.</code></pre>
+        </div>
+      </article>
+
+      <article class="prompt-card">
+        <h2>Smoke test suite design</h2>
+        <p>Define a minimal smoke suite to verify the build is testable.</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>Our app: [1–2 sentences]. Main entry points: [e.g. login, home, one critical flow].
+
+Design a smoke test suite (5–10 tests max) that:
+- Verifies the app starts and core services respond
+- Covers one happy path per critical area (login, main API, main screen)
+- Can run in under 10 minutes
+- Is stable (no flaky steps)
+
+Output: test name | steps (1–3 each) | expected. Table or list.</code></pre>
+        </div>
+      </article>
+
+      <article class="prompt-card">
+        <h2>Release / go-live checklist</h2>
+        <p>Get a pre-release checklist: testing, config, rollback, and sign-off.</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>We're about to release [product/release]. Environment: [e.g. web + API, DB].
+
+Generate a go-live checklist:
+1. Testing: smoke, regression, critical path—what must be green
+2. Config: feature flags, env vars, DB migrations—what to verify
+3. Rollback: steps and data backup
+4. Sign-off: who approves (dev, QA, ops) and what they check
+5. Post-release: monitoring, quick sanity—first 15 min
+
+Output as a checklist (checkbox style). One line per item.</code></pre>
+        </div>
+      </article>
+
+      <article class="prompt-card">
+        <h2>Test estimation</h2>
+        <p>Estimate test effort for stories or a release.</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>We need to estimate testing for [sprint/release]. Scope: [list 5–10 user stories or features in one line each].
+
+For each item suggest:
+- Test design time (hours)
+- Test execution time (hours, assume 1–2 runs)
+- Automation effort if applicable (hours, or "manual only")
+- Dependencies or risks that could change the estimate
+
+Output as table: Story/Feature | Design | Execution | Automation | Notes. Then give total and buffer suggestion (e.g. +20%).</code></pre>
+        </div>
+      </article>
+
+      <article class="prompt-card">
+        <h2>Exit criteria definition</h2>
+        <p>Define when testing is done and release is acceptable.</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>Project: [1 sentence]. We need clear exit criteria for QA sign-off.
+
+Suggest 5–7 exit criteria covering:
+- Test execution (e.g. all critical tests passed, no P1/P2 open)
+- Coverage (e.g. all AC covered, critical paths automated)
+- Quality (e.g. defect rate, no known critical bugs)
+- Non-functional (e.g. performance budget, security scan passed)
+- Documentation and handover
+
+Each criterion: one line, measurable where possible (e.g. "&lt; 2 P2 bugs open").</code></pre>
+        </div>
+      </article>
+
+      <h3 class="section-heading">BRD &amp; requirements</h3>
+
+      <article class="prompt-card">
+        <h2>BRD structure and outline</h2>
+        <p>Get a Business Requirements Document (BRD) outline so requirements are clear and testable.</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>We're writing a BRD for [project/product in 1 sentence]. Key stakeholders: [e.g. business, ops, IT]. Scope: [2–3 bullet points].
+
+Suggest a BRD structure with sections:
+1. Executive summary (purpose, scope, high-level outcome)
+2. Business objectives and success criteria (measurable)
+3. Stakeholders and users (roles, who does what)
+4. Functional requirements (numbered, one per requirement; format: "The system shall...")
+5. Non-functional requirements (performance, security, availability—one line each)
+6. Assumptions and constraints
+7. Out of scope
+8. Glossary (key terms)
+
+For section 4, give 3–5 example requirement statements we can expand. Each requirement must be testable.</code></pre>
+        </div>
+      </article>
+
+      <article class="prompt-card">
+        <h2>BRD to test scenarios and traceability</h2>
+        <p>Turn BRD requirements into test scenarios and a traceability matrix.</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>BRD requirements (numbered): [paste 5–15 "The system shall..." or similar].
+
+For each requirement:
+1. Generate 1–3 test scenarios (scenario name, steps, expected result)
+2. Suggest test type (functional, API, UI, integration) and priority (P1/P2/P3)
+
+Output as traceability table: Req ID | Requirement (short) | Test scenario | Steps summary | Type | Priority. So we can map tests back to BRD and report coverage.</code></pre>
+        </div>
+      </article>
+
+      <article class="prompt-card">
+        <h2>BRD review for testability</h2>
+        <p>Review BRD sections and flag vague or untestable requirements.</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>We have a BRD section or list of requirements: [paste].
+
+Review for testability:
+1. List requirements that are vague (e.g. "user-friendly", "fast")—suggest how to make them testable (e.g. "load time &lt; 2s", "WCAG AA")
+2. List requirements that are missing (e.g. error handling, edge cases, security)
+3. For each requirement: is it testable as-is? If not, suggest a clearer version in "The system shall..." format
+4. Suggest 2–3 acceptance criteria for the most critical requirement
+
+Output as table: Req/Line | Issue (vague/missing/untestable) | Suggested fix.</code></pre>
+        </div>
+      </article>
+
+      <article class="prompt-card">
+        <h2>BRD to acceptance criteria</h2>
+        <p>Convert BRD requirements into acceptance criteria for stories or test cases.</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>BRD requirement: [paste one or more "The system shall..." statements].
+
+Convert each into 2–4 acceptance criteria that a tester or product owner can sign off. Use format: "Given [context], When [action], Then [observable result]" or "The system shall [specific, measurable behavior]." Each AC must be pass/fail testable. Output as numbered list.</code></pre>
+        </div>
+      </article>
+
+      <article class="prompt-card">
+        <h2>BRD gap analysis (requirements vs scope)</h2>
+        <p>Check if BRD covers the scope and spot gaps or conflicts.</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>Project scope or epic summary: [paste]. BRD requirements (numbered): [paste].
+
+Perform a gap analysis:
+1. Scope items not covered by any requirement—list and suggest a requirement
+2. Requirements that don't align with stated scope—flag and suggest (drop or move to later)
+3. Overlaps or conflicts between requirements—list and suggest merge or clarify
+4. Missing NFRs (e.g. performance, security, compliance) for this scope—suggest 2–3
+
+Output as short sections with bullet lists. One paragraph summary at the end.</code></pre>
+        </div>
+      </article>
+
+      <h3 class="section-heading">BDD &amp; test design</h3>
+
+      <article class="prompt-card">
+        <h2>BDD / Gherkin scenarios</h2>
+        <p>Turn a user story or flow into Given/When/Then scenarios.</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>User story or flow: [paste].
+
+Generate 3–5 BDD scenarios in Gherkin format (Feature, Scenario, Given, When, Then). Include:
+- Happy path
+- 1–2 validation or error scenarios
+- One edge case
+
+Use consistent wording. No implementation details in steps (e.g. "When the user submits the form" not "When the user clicks button#submit").</code></pre>
+        </div>
+      </article>
+
+      <article class="prompt-card">
+        <h2>Boundary value &amp; equivalence partitioning</h2>
+        <p>Get boundary and equivalence class test cases for inputs.</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>We have these inputs to test: [e.g. age 1–120, quantity 0–999, email string max 255 chars].
+
+For each input:
+1. Boundary values (min, min-1, max, max+1, zero/empty if applicable)
+2. Equivalence classes (valid range, invalid low, invalid high, wrong type)
+3. One test case per boundary/class with expected result
+
+Output as table: Input | Test value | Class/Boundary | Expected. Keep to 10–15 test cases total.</code></pre>
+        </div>
+      </article>
+
+      <article class="prompt-card">
+        <h2>Negative test case generation</h2>
+        <p>Generate negative test cases from a feature or API description.</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>Feature or API: [short description]. We need negative test cases.
+
+Generate 5–8 negative test cases:
+- Invalid input (wrong type, out of range, malformed)
+- Missing required data
+- Unauthorized or wrong role
+- Invalid state or sequence (e.g. action not allowed in current state)
+- One "abuse" or unexpected usage
+
+For each: scenario name | steps/data | expected (error message or code). Table.</code></pre>
+        </div>
+      </article>
+
+      <h3 class="section-heading">UAT &amp; acceptance</h3>
+
+      <article class="prompt-card">
+        <h2>UAT scenarios from user stories</h2>
+        <p>Turn user stories into UAT scenarios for business users.</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>User stories for this release: [paste 3–5 stories with acceptance criteria].
+
+Generate UAT scenarios that a business user can execute and sign off. For each:
+- Scenario title (business language)
+- Preconditions
+- Steps (user actions only, no technical jargon)
+- Expected result
+- Sign-off checkbox idea (e.g. "I confirm orders display correctly")
+
+Output as table or formatted list. Max 2 pages when printed.</code></pre>
+        </div>
+      </article>
+
+      <article class="prompt-card">
+        <h2>Acceptance criteria checklist</h2>
+        <p>Convert acceptance criteria into a testable checklist.</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>Acceptance criteria: [paste].
+
+Convert each AC into one or more testable checklist items. Each item: one sentence, testable (pass/fail), no ambiguity. If an AC is too vague, suggest a clearer version. Output as numbered checklist.</code></pre>
+        </div>
+      </article>
+
+      <h3 class="section-heading">Mobile &amp; compatibility</h3>
+
+      <article class="prompt-card">
+        <h2>Mobile test cases (iOS / Android)</h2>
+        <p>Get mobile-specific test scenarios: gestures, permissions, interruptions, network.</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>Our mobile app: [1–2 sentences]. Platform: [iOS, Android, or both].
+
+Generate mobile test cases covering:
+1. Core flow (login, main feature)—3 cases
+2. Gestures (swipe, pull-to-refresh, back)—2 cases
+3. Permissions (camera, location, notifications)—accept, deny, revoke
+4. Interruptions (call, notification, app backgrounded mid-flow)—2 cases
+5. Network (offline, slow, switch WiFi to cellular)—2 cases
+6. Orientation and keyboard (if applicable)
+
+Output: scenario | steps | expected. Table.</code></pre>
+        </div>
+      </article>
+
+      <article class="prompt-card">
+        <h2>Compatibility matrix (browsers, devices, OS)</h2>
+        <p>Suggest what to test on for coverage vs effort.</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>We have [web app / mobile app / both]. Target users: [e.g. global, mostly Chrome and Safari].
+
+Suggest a compatibility test matrix:
+1. Tier 1 (must test every release): browsers/devices/OS with % share or rationale
+2. Tier 2 (test major releases): list
+3. Tier 3 (spot-check or on demand): list
+4. What to test per tier (e.g. smoke only vs full regression)
+5. Suggested tools (BrowserStack, Sauce Labs, real devices)—one line
+
+Output as table or list. Keep Tier 1 to 3–5 combinations.</code></pre>
+        </div>
+      </article>
+
+      <article class="prompt-card">
+        <h2>Accessibility (a11y) test cases</h2>
+        <p>Get accessibility test scenarios and WCAG-related checks.</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>We need to add accessibility testing for [e.g. main flows / checkout / dashboard].
+
+Generate a11y test cases covering:
+1. Keyboard navigation (tab order, focus visible, no traps)
+2. Screen reader (labels, landmarks, announcements)—what to check
+3. Color contrast and text resize
+4. Forms (labels, errors, required)
+5. One or two WCAG 2.1 Level A/AA criteria with a simple check
+
+Output: area | check | how to verify (tool or manual). Table. Suggest axe or similar for automation.</code></pre>
+        </div>
+      </article>
+
+      <h3 class="section-heading">Database &amp; integration</h3>
+
+      <article class="prompt-card">
+        <h2>Database test cases</h2>
+        <p>Design tests for data integrity, constraints, and migrations.</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>We have [e.g. PostgreSQL / MySQL]. Key tables: [list 3–5 or describe schema briefly]. We do [CRUD, reports, migrations].
+
+Suggest database test cases for:
+1. Constraints (PK, FK, unique, not null)—what to try to break
+2. Data integrity (valid values, cascades)
+3. Migration (up/down, data backfill)—what to verify before/after
+4. Concurrency (e.g. two users updating same row)—one scenario
+5. Indexes and performance (optional)—what to measure
+
+Output: test name | steps/query idea | expected. Table. No production data.</code></pre>
+        </div>
+      </article>
+
+      <article class="prompt-card">
+        <h2>Integration test scenarios</h2>
+        <p>Define integration tests between modules or services.</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>Our system: [e.g. frontend, API, payment service, notification service]. Key integrations: [list].
+
+Suggest integration test scenarios:
+1. Happy path: request flows through all layers, response correct
+2. One service down or slow—expected error or fallback
+3. Invalid data from external service—how we handle it
+4. Contract: API request/response matches what consumer expects
+5. Idempotency or retry (if applicable)—one scenario
+
+Output: scenario | components involved | steps | expected. Table.</code></pre>
+        </div>
+      </article>
+
+      <article class="prompt-card">
+        <h2>E2E flow design</h2>
+        <p>Design end-to-end test flows from user journey to system.</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>User journey: [e.g. user signs up, verifies email, completes profile, makes first purchase].
+
+Our stack: [e.g. web UI, API, DB, email service]. Design 2–3 E2E test flows that:
+- Start from UI (or API if no UI for step)
+- Cover the full journey with realistic data
+- Include one failure path (e.g. payment declined) and recovery
+- Note which systems must be up and any test data needed
+
+Output: flow name | steps (high level) | systems touched | test data. Numbered steps.</code></pre>
+        </div>
+      </article>
+
+      <article class="prompt-card">
+        <h2>SQL and data validation tests</h2>
+        <p>Design SQL-based tests to validate data after operations or migrations.</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>DB: [e.g. PostgreSQL / MySQL / SQL Server]. After [e.g. order placement / user signup / nightly job] we need to verify data.
+
+Suggest 5–7 validation checks as SQL or steps:
+1. Row counts (e.g. orders table increased by 1)
+2. Referential integrity (no orphaned child rows, FK valid)
+3. Calculated fields (totals, status derived correctly)
+4. Nulls and defaults (required columns populated)
+5. One check for duplicate or invalid state
+6. Optional: query performance (index used, no full scan)
+
+Output: check name | SQL or step | expected. Use table names in square brackets if needed. No production data.</code></pre>
+        </div>
+      </article>
+
+      <article class="prompt-card">
+        <h2>Database migration testing</h2>
+        <p>Plan tests for schema migrations and data backfills.</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>We're running a DB migration: [describe: e.g. add column, new table, backfill from old table, drop column]. Tool: [e.g. Flyway, Liquibase, raw SQL].
+
+Suggest a migration test plan:
+1. Pre-migration: backup, row counts, sample data hash (for comparison)
+2. Migration run: up success, rollback/down works
+3. Post-migration: schema correct (columns, types, constraints), row counts same or as expected, backfilled data correct
+4. Application: app starts, one read and one write to changed area
+5. Rollback scenario: if we roll back, what to verify
+
+Output as numbered checklist. No production; use staging or copy.</code></pre>
+        </div>
+      </article>
+
+      <article class="prompt-card">
+        <h2>Stored procedures and triggers testing</h2>
+        <p>Get test cases for stored procedures, functions, and triggers.</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>We have [stored procedures / triggers / functions] in [e.g. PostgreSQL / SQL Server]. Purpose: [e.g. "on order insert, update inventory and log"].
+
+Suggest test cases:
+1. Happy path: valid input, expected side effects (rows inserted/updated, log written)
+2. Invalid input: null, out of range, duplicate—expected error or behavior
+3. Trigger: before/after state of table, other tables affected
+4. Concurrency: two calls at once—expected result (e.g. lock, serialized)
+5. One edge case (e.g. empty set, zero, boundary value)
+
+Output: test name | input/setup | expected (return value and DB state). Table.</code></pre>
+        </div>
+      </article>
+
+      <article class="prompt-card">
+        <h2>Data comparison and reconciliation</h2>
+        <p>Design tests to compare data across systems or before/after.</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>We need to reconcile or compare: [e.g. source DB vs warehouse, API response vs DB, file import vs table].
+
+Suggest a comparison test approach:
+1. Key columns to match (PK, business keys)
+2. What to do with mismatches (count, list IDs, diff sample)
+3. Order and null handling (sort by key, treat nulls)
+4. Volume: full vs sample (e.g. last 24h), performance tip
+5. One simple query or pseudocode for "count matches vs total"
+6. Optional: tool (e.g. dbt test, custom script, SQL EXCEPT)
+
+Output as short sections. No production data.</code></pre>
+        </div>
+      </article>
+
+      <h3 class="section-heading">Defects &amp; reporting</h3>
+
+      <article class="prompt-card">
+        <h2>Defect severity and priority</h2>
+        <p>Get severity/priority suggestion and reproduction steps from a bug description.</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>Bug description: [paste summary and steps].
+
+Suggest:
+1. Severity (critical/major/minor/cosmetic) with one-line reason
+2. Priority (P1/P2/P3) for our release—one line
+3. Improved title (one line, clear and searchable)
+4. Missing info: what else to add (browser, env, logs) for dev to fix
+5. Suggested labels or component (e.g. "checkout", "API")</code></pre>
+        </div>
+      </article>
+
+      <article class="prompt-card">
+        <h2>Test summary report from results</h2>
+        <p>Turn raw test results into a short summary report for stakeholders.</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>Test execution results: [paste counts: passed, failed, skipped, blocked; or paste a short summary].
+
+Generate a 5–7 line test summary report for stakeholders:
+- Scope (what was tested)
+- Result (pass/fail rate, trend if applicable)
+- Defects (count by severity, any blocking)
+- Risks or open items
+- Recommendation (ready for release / not ready / with conditions)
+
+Tone: factual, no jargon. Use bullet points.</code></pre>
+        </div>
+      </article>
+
+      <article class="prompt-card">
+        <h2>Flaky test analysis</h2>
+        <p>Get possible causes and fixes for a flaky test from failure details.</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>Our test sometimes fails: [paste test name, framework, and failure message or stack trace]. It passes on retry.
+
+Suggest:
+1. Likely causes (timing, order, env, shared state, network)—rank by probability
+2. Quick fixes to try (e.g. explicit wait, isolate data, retry once)
+3. One code or config change with example (pseudocode or snippet)
+4. How to prevent similar flakiness (pattern or rule)
+
+Keep to one page. No generic advice only.</code></pre>
+        </div>
+      </article>
+
+      <h3 class="section-heading">CI/CD &amp; test data</h3>
+
+      <article class="prompt-card">
+        <h2>CI test pipeline design</h2>
+        <p>Suggest stages and jobs for running tests in CI.</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>We use [e.g. Jenkins / GitHub Actions / Azure DevOps]. We have: unit tests, API tests, UI tests (Playwright), and a smoke suite. Build takes ~5 min.
+
+Suggest a CI test pipeline:
+1. Stages (e.g. build → unit → API → UI smoke → full UI) and when each runs (every commit vs nightly)
+2. Parallelization (what can run in parallel)
+3. Failure handling (fail fast vs run all, notifications)
+4. Test reports and artifacts (where to store, what to publish)
+5. One example config snippet (YAML or equivalent) for one stage
+
+Output as numbered list plus one snippet. Adapt to our tool.</code></pre>
+        </div>
+      </article>
+
+      <article class="prompt-card">
+        <h2>Test data strategy</h2>
+        <p>Define how to create, manage, and clean test data.</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>Our app needs: [e.g. users, orders, products, subscriptions]. We have [dev, staging, shared CI] environments.
+
+Suggest a test data strategy:
+1. Source of truth (seed scripts, API, DB copy, synthetic)—per env
+2. Isolation (per test vs shared, how to avoid collisions)
+3. Sensitive data (PII)—how to anonymize or generate
+4. Cleanup (after run, daily, or never) and who owns it
+5. One practical approach for CI (e.g. "run seed before suite, truncate after") with pros/cons
+
+Output as short sections. No production data.</code></pre>
+        </div>
+      </article>
+
+      <article class="prompt-card">
+        <h2>Environment setup checklist</h2>
+        <p>Get a checklist for setting up a test environment.</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>We need to set up a [e.g. staging / QA] environment for [web app + API + DB]. We use [e.g. Docker, cloud, on-prem].
+
+Generate an environment setup checklist:
+1. Infrastructure (servers, containers, URLs)
+2. Application (build, config, env vars, feature flags)
+3. Data (DB, migrations, seed data)
+4. External services (mocks, stubs, or real—which)
+5. Smoke verification (3–5 checks that env is ready for testing)
+6. Access and credentials (who gets what, where stored)
+
+One line per item. Checkbox style.</code></pre>
+        </div>
+      </article>
+
+      <article class="prompt-card">
+        <h2>Test coverage gap analysis</h2>
+        <p>Identify gaps from a list of features and existing tests.</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>Features or modules: [list]. Our current tests cover: [list what you have].
+
+Identify:
+1. Gaps (features or flows with no or weak coverage)
+2. Overlap (redundant tests to consider removing or merging)
+3. Priority order to add tests (by risk and effort)
+4. Suggested test type per gap (unit, API, UI, manual)
+
+Output as table: Feature/Area | Coverage | Gap? | Suggested action. One paragraph summary at the end.</code></pre>
+        </div>
+      </article>
+
+      <article class="prompt-card">
+        <h2>GitHub Actions test workflow</h2>
+        <p>Get a YAML workflow for running tests on push/PR.</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>We use GitHub Actions. We have: [e.g. Node 20, npm install, npm run test (unit), npm run test:api, npm run test:e2e]. We want tests to run on push to main and on every PR.
+
+Generate a .github/workflows/test.yml that:
+1. Triggers on push to main and pull_request to main
+2. One job: checkout, setup Node, install deps, run unit tests
+3. Second job: run API tests (can depend on job 1)
+4. Optional: third job for E2E (e.g. Playwright) or matrix for multiple Node versions
+5. Upload test results or report artifact if our runner produces them (e.g. junit, coverage)
+6. Fail the workflow if any test fails
+
+Output the full YAML. Use standard actions (actions/checkout, actions/setup-node).</code></pre>
+        </div>
+      </article>
+
+      <article class="prompt-card">
+        <h2>Jenkins pipeline for tests</h2>
+        <p>Get a Jenkinsfile or pipeline stages for build and test.</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>We use Jenkins. Build: [e.g. Maven / npm]. We have unit tests, API tests, and UI tests (e.g. Selenium/Playwright). We want to run on every commit and keep logs and reports.
+
+Suggest a declarative pipeline (Jenkinsfile) with stages:
+1. Checkout
+2. Build (compile / npm install)
+3. Unit tests (with report archiving, e.g. JUnit)
+4. API tests (parallel or sequential)
+5. UI tests (optional, or only on main branch)
+6. Post: archive artifacts, publish test results, cleanup
+7. Failure: notify (e.g. Slack/email), fail the build
+
+Include one example stage with sh step and report publishing. Mention where to set credentials (e.g. env vars).</code></pre>
+        </div>
+      </article>
+
+      <article class="prompt-card">
+        <h2>CI pipeline failure triage</h2>
+        <p>From a failing CI log or summary, get likely cause and next steps.</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>Our CI pipeline failed. Context: [e.g. GitHub Actions, stage that failed]. Summary or log excerpt:
+
+[Paste error message, failed test name, or last 20 lines of log]
+
+Suggest:
+1. Likely cause (flaky test, env, dependency, code bug, config)—rank top 2
+2. Next steps to debug (what to run locally, what to check in repo/CI)
+3. Quick fix if it's a known pattern (e.g. timeout, path, secret missing)
+4. How to prevent (e.g. add retry, fix env, add assertion)
+
+Keep to one page. If log is large, paste only the failure part.</code></pre>
+        </div>
+      </article>
+
+      <article class="prompt-card">
+        <h2>Test reporting in CI (JUnit, coverage, dashboards)</h2>
+        <p>Design how to publish test results and coverage in your CI tool.</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>We use [e.g. GitHub Actions / Jenkins / Azure DevOps]. Our tests output: [e.g. JUnit XML, coverage (Istanbul/Cobertura), Allure]. We want: visible results in the pipeline, coverage trend, and optional badge.
+
+Suggest:
+1. Where to publish test results (action/plugin name, e.g. actions/upload-artifact, publish test results)
+2. How to publish coverage (report format, where to store, trend over time)
+3. Fail build if coverage drops below X% (optional)—how to configure
+4. One dashboard or summary idea (e.g. PR comment with summary, SonarQube)
+5. One example step or config snippet for our tool
+
+Output as numbered list plus one snippet. No production secrets.</code></pre>
+        </div>
+      </article>
+
+      <article class="prompt-card">
+        <h2>Green build and deployment criteria</h2>
+        <p>Define when a build is "green" and when it can deploy.</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>We have: build, unit tests, API tests, UI smoke, lint, security scan. We deploy from [e.g. main branch] to [e.g. staging then prod].
+
+Define "green build" and "ready to deploy" criteria:
+1. Green build: which jobs must pass (all? or allow known flaky to be skipped?)
+2. Blocking vs non-blocking (e.g. lint can warn but not block)
+3. Ready to deploy to staging: green build + what else (e.g. manual approval, no critical bugs)
+4. Ready to deploy to prod: staging sign-off + what (e.g. change request, rollback plan)
+5. What to do when build is red (who fixes, how long to fix, notify)
+
+Output as short criteria list. One line per rule.</code></pre>
+        </div>
+      </article>
+
+      <article class="prompt-card">
+        <h2>CI/CD test environment and secrets</h2>
+        <p>Suggest how to manage test env and secrets in pipelines.</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>Our tests need: [e.g. test DB URL, API keys for sandbox, test user credentials]. We run in [e.g. GitHub Actions / Jenkins]. We have [one shared test env / ephemeral env per run].
+
+Suggest:
+1. Where to store secrets (e.g. GitHub Secrets, Jenkins credentials, vault) and how to inject (env vars, file)
+2. How to point tests at the right env (env var for base URL, config file from secret)
+3. Ephemeral vs shared: pros/cons for test DB (e.g. Docker per run vs shared staging DB)
+4. Cleanup: who creates/destroys test data or containers, when
+5. One example: "set BASE_URL and DB_URL from secrets before running API tests" in our CI tool
+
+Output as short sections. No real secrets.</code></pre>
         </div>
       </article>
     </section>
