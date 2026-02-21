@@ -1,0 +1,99 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Tools we use — AI × Testing" description="LLMs, Copilot, and AI-powered QA platforms for testing.">
+  <div class="page">
+    <h1>Tools we use</h1>
+    <p class="lead">AI tools that actually get used for test design, generation, and automation. Updated as we try new things.</p>
+
+    <section class="tools-grid">
+      <article class="tool-card">
+        <h2>LLMs (ChatGPT, Claude, etc.)</h2>
+        <p>Use for: test-case generation from requirements, test data ideas, bug report drafting, and prompt-based test design. Best when you paste concrete context (user story, API spec, error message).</p>
+        <span class="tag">Prompt-driven</span>
+      </article>
+
+      <article class="tool-card">
+        <h2>GitHub Copilot / Cursor</h2>
+        <p>Use for: writing and refactoring test code (Playwright, Selenium, Jest, etc.), generating assertions, and fixing broken tests after UI changes. Pair with clear comments or spec-style descriptions.</p>
+        <span class="tag">In-IDE</span>
+      </article>
+
+      <article class="tool-card">
+        <h2>Testim / Mabl / Functionize</h2>
+        <p>Dedicated AI testing platforms: self-healing selectors, codeless or low-code flows, and sometimes test generation. Good to evaluate with a small suite first and measure maintenance cost.</p>
+        <span class="tag">Platform</span>
+      </article>
+
+      <article class="tool-card">
+        <h2>Applitools (visual + AI)</h2>
+        <p>Visual regression with AI to ignore non-functional changes. Use when UI stability matters and you want to reduce noisy visual diffs.</p>
+        <span class="tag">Visual</span>
+      </article>
+
+      <article class="tool-card">
+        <h2>OpenAI / Anthropic APIs</h2>
+        <p>Use LLM APIs from your own scripts to generate test cases, test data, or to review test code. Good for custom pipelines, CI, or internal tools. Keep prompts and outputs in version control for reproducibility.</p>
+        <span class="tag">API</span>
+      </article>
+    </section>
+
+    <p class="note">Deep dives in the blog: <a href="/blog/what-is-ai-testing">What AI testing means</a>, <a href="/blog/copilot-playwright-quick-win">Copilot + Playwright</a>, <a href="/blog/ai-test-data-generation">AI test data</a>, <a href="/blog/performance-testing-with-ai">Performance with AI</a>, <a href="/blog/ui-testing-with-ai">UI testing with AI</a>, <a href="/blog/jira-and-ai-for-testing">Jira + AI</a>, <a href="/blog/security-testing-with-ai">Security with AI</a>, <a href="/blog/api-testing-with-ai-deep-dive">More API testing with AI</a>. More tool reviews as we add posts tagged <code>aiTwist: tool</code>.</p>
+  </div>
+</BaseLayout>
+
+<style>
+  .page h1 {
+    margin: 0 0 0.5rem 0;
+  }
+
+  .lead {
+    color: var(--muted);
+    margin: 0 0 2rem 0;
+  }
+
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .tool-card {
+    padding: 1.25rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+  }
+
+  .tool-card h2 {
+    font-size: 1.1rem;
+    margin: 0 0 0.5rem 0;
+  }
+
+  .tool-card p {
+    font-size: 0.95rem;
+    color: var(--muted);
+    margin: 0 0 0.75rem 0;
+    line-height: 1.5;
+  }
+
+  .tag {
+    font-size: 0.8rem;
+    padding: 0.2em 0.5em;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--muted);
+  }
+
+  .note {
+    margin-top: 2.5rem;
+    padding: 1rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+</style>

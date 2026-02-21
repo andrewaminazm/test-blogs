@@ -1,0 +1,135 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+const posts = (await getCollection('blog'))
+  .filter((p) => !p.data.draft)
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+---
+
+<BaseLayout title="AI × Testing — Blog" description="Practical AI for software testers. Prompts, tools, and real results.">
+  <div class="home">
+    <h1>Testing with AI</h1>
+    <p class="lead">Prompts, tools, and real results for testers and QA. No hype—just what works.</p>
+
+    <section class="promo-links">
+      <a href="/prompts/" class="card">
+        <span class="card-label">Prompt library</span>
+        <span class="card-title">Copy-paste prompts</span>
+        <span class="card-desc">Test-case generation, review, and maintenance.</span>
+      </a>
+      <a href="/tools/" class="card">
+        <span class="card-label">Tools we use</span>
+        <span class="card-title">AI testing tools</span>
+        <span class="card-desc">LLMs, Copilot, and dedicated AI QA platforms.</span>
+      </a>
+    </section>
+
+    <section class="posts-section">
+      <h2>Latest posts</h2>
+      <ul class="post-list">
+        {posts.map((post) => (
+          <li>
+            <a href={`/blog/${post.slug}`}>
+              <span class="post-title">{post.data.title}</span>
+              <span class="post-meta">
+                {post.data.pubDate.toLocaleDateString('en-US', { dateStyle: 'medium' })}
+                {post.data.aiTwist ? ` · ${post.data.aiTwist}` : ''}
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .home {
+    padding: 0;
+  }
+
+  .lead {
+    font-size: 1.15rem;
+    color: var(--muted);
+    margin: 0 0 2rem 0;
+  }
+
+  .promo-links {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1rem;
+    margin-bottom: 3rem;
+  }
+
+  .card {
+    display: block;
+    padding: 1.25rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .card:hover {
+    border-color: var(--accent-dim);
+    box-shadow: 0 0 0 1px var(--accent-dim);
+  }
+
+  .card-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .card-title {
+    display: block;
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin: 0.25rem 0 0.5rem 0;
+  }
+
+  .card-desc {
+    font-size: 0.95rem;
+    color: var(--muted);
+  }
+
+  .posts-section h2 {
+    font-size: 1.25rem;
+    margin: 0 0 1rem 0;
+  }
+
+  .post-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .post-list li {
+    border-bottom: 1px solid var(--border);
+  }
+
+  .post-list a {
+    display: block;
+    padding: 1rem 0;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .post-list a:hover .post-title {
+    color: var(--accent);
+  }
+
+  .post-title {
+    display: block;
+    font-weight: 600;
+  }
+
+  .post-meta {
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+</style>

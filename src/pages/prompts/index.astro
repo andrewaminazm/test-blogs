@@ -1,0 +1,398 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Prompt library — AI × Testing" description="Copy-paste prompts for test-case generation, review, and maintenance.">
+  <div class="page">
+    <h1>Prompt library</h1>
+    <p class="lead">Prompts you can paste into ChatGPT, Claude, or Copilot to generate test cases, review tests, and more.</p>
+
+    <section class="prompt-list">
+      <article class="prompt-card">
+        <h2>Test scenarios from user story</h2>
+        <p>Give the model a user story and get structured test scenarios (happy path, validation, edge cases).</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>Given this user story:
+[Paste user story here]
+
+Generate 5–7 test scenarios. For each scenario provide:
+1. Scenario name
+2. Preconditions
+3. Steps
+4. Expected result
+5. Type: happy path | validation | edge case | security
+
+Output as a markdown table.</code></pre>
+        </div>
+      </article>
+
+      <article class="prompt-card">
+        <h2>API test cases from OpenAPI/Swagger</h2>
+        <p>Turn an API spec into concrete test cases (status codes, payloads, error handling).</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>Here is our API specification (OpenAPI/Swagger):
+[Paste spec or link]
+
+For each endpoint, generate test cases covering:
+- 200/201 success
+- 400 validation errors
+- 401/403 auth
+- 404 not found
+- One negative/edge case per endpoint
+
+Format: endpoint | method | scenario | expected status | sample payload (if needed).</code></pre>
+        </div>
+      </article>
+
+      <article class="prompt-card">
+        <h2>Review AI-generated tests</h2>
+        <p>Use AI to critique and improve tests that were themselves AI-generated.</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>Review these automated test cases for correctness and maintainability:
+
+[Paste test code]
+
+List:
+1. Logic bugs or false assumptions
+2. Flaky patterns (e.g. arbitrary waits, brittle selectors)
+3. Missing assertions or edge cases
+4. Suggested improvements with code snippets</code></pre>
+        </div>
+      </article>
+
+      <article class="prompt-card">
+        <h2>Exploratory test charter</h2>
+        <p>Get a focused mission and focus areas for a time-boxed exploratory session.</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>We're testing [feature or screen name]. Context: [1–2 sentences].
+
+Create an exploratory test charter with:
+- Mission (one sentence)
+- 5 areas to focus on (specific behaviors or risks)
+- 3 test data ideas (e.g. "user with no history", "max length input")
+- 2 things to avoid (e.g. "don't assume backend is correct")
+
+Keep each item to one line. Output as a simple list.</code></pre>
+        </div>
+      </article>
+
+      <article class="prompt-card">
+        <h2>API test payload variants</h2>
+        <p>Generate minimal, full, invalid, and edge-case request bodies from a schema or sample.</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>We need test request bodies for our REST API. Schema or sample:
+
+[Paste JSON schema or a sample valid payload]
+
+Generate 5 variants:
+1. Minimal valid (only required fields)
+2. Full valid (all optional fields filled)
+3. Invalid: missing required field "X"
+4. Invalid: wrong type for field "Y"
+5. Edge case: empty string where allowed, or max length
+
+Output as JSON array. Use clearly fake data (test@example.com, "Test User").</code></pre>
+        </div>
+      </article>
+
+      <article class="prompt-card">
+        <h2>Bug report from failure</h2>
+        <p>Turn a failing test or error message into a concise bug report draft.</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>Turn this test failure into a short bug report:
+
+[Paste error output, stack trace, or failing assertion]
+
+Include:
+- Title (one line)
+- Steps to reproduce (numbered)
+- Expected vs actual
+- Environment (browser/API version if relevant)
+- Severity suggestion (critical/major/minor) with one-line reason</code></pre>
+        </div>
+      </article>
+
+      <article class="prompt-card">
+        <h2>Performance: load test scenario design</h2>
+        <p>Get scenarios, user mix, think times, and metrics to track for a load or stress test.</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>We're planning a load test for our app. [1–2 sentences: main flows, e.g. login, browse, checkout.]
+
+Provide:
+1. 4–5 performance scenarios (name + short steps)
+2. Suggested user mix (e.g. 70% browsing, 20% cart, 10% checkout)
+3. Think time between actions (min–max in seconds)
+4. Which 2–3 endpoints or pages we should monitor for p95 latency
+5. One stress scenario idea (spike or sustained high load)
+
+Assume [e.g. 50–100] virtual users, [e.g. 10] minute run. Output as a table or structured list.</code></pre>
+        </div>
+      </article>
+
+      <article class="prompt-card">
+        <h2>Performance: interpret load test results</h2>
+        <p>Paste a short summary of metrics and get hypotheses for bottlenecks or regressions.</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>We ran a load test. Context: [tool, duration, virtual users, main flow].
+
+Results summary:
+[Paste p50/p95/p99, error rate, CPU or key metrics—keep it short]
+
+What might explain the main bottleneck or the spike in [metric]? Suggest 2–3 things to check next (e.g. DB, cache, connection pool, GC). One line per suggestion.</code></pre>
+        </div>
+      </article>
+
+      <article class="prompt-card">
+        <h2>UI test draft from flow description</h2>
+        <p>Describe a user flow in plain language and get a Playwright (or similar) test draft with stable selectors.</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>We're writing a UI test in Playwright. Flow:
+
+[E.g. User goes to /login, fills email and password, clicks "Sign in", and should see the dashboard with "Welcome" text.]
+
+Generate a single test that:
+1. Goes to the page
+2. Fills the fields (use getByRole or getByLabel only)
+3. Clicks submit
+4. Asserts the expected outcome (URL or visible text)
+
+Use stable selectors only (no class names or brittle IDs). Add a short comment per step.</code></pre>
+        </div>
+      </article>
+
+      <article class="prompt-card">
+        <h2>Visual regression: prioritize screens</h2>
+        <p>Get a shortlist of high-value screens or components to add visual regression tests first.</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>We're adding visual regression tests. Our app: [1–2 sentences: type of app, main areas].
+
+List 5 high-value screens or components to add visual tests first. For each give:
+- Name or route/component
+- Why it's high value (e.g. revenue, frequent change, compliance)
+- One risk if it regresses (e.g. "checkout layout breaks")
+
+Output as a short numbered list.</code></pre>
+        </div>
+      </article>
+
+      <h3 class="section-heading">Jira &amp; test management</h3>
+
+      <article class="prompt-card">
+        <h2>Story to acceptance criteria (for Jira)</h2>
+        <p>Turn a rough idea into a user story and testable acceptance criteria you can paste into Jira.</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>We use Jira. Turn this into one user story with acceptance criteria:
+
+[Paste product idea or summary]
+
+Output:
+- Title: "As a [role], I want [goal] so that [benefit]"
+- 3–5 acceptance criteria, each testable (Given/When/Then or "System shall...")
+- 1–2 edge cases to consider
+
+Format for Jira description. No markdown headers in the criteria list.</code></pre>
+        </div>
+      </article>
+
+      <article class="prompt-card">
+        <h2>Jira acceptance criteria → test cases</h2>
+        <p>Generate test case summaries and steps from Jira acceptance criteria for bulk creation.</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>This Jira story has these acceptance criteria:
+
+[Paste AC from Jira]
+
+Generate test cases for Jira. For each: Summary (Jira title) | Steps (numbered) | Expected result | AC covered (e.g. AC2). Output as table. We'll create one Jira test issue per row.</code></pre>
+        </div>
+      </article>
+
+      <article class="prompt-card">
+        <h2>Sprint test planning (Jira)</h2>
+        <p>From a list of story titles, get suggested AC and test case summaries for the sprint.</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>Next sprint Jira story titles: [paste 5–10 titles].
+
+For each: 2–3 acceptance criteria (short) and 1–2 test case summaries. Output: Story title | AC | Test summary. Table format for pasting into Jira.</code></pre>
+        </div>
+      </article>
+
+      <h3 class="section-heading">Security testing</h3>
+
+      <article class="prompt-card">
+        <h2>Security test cases from feature description</h2>
+        <p>Get auth, injection, and logic abuse test cases with severity and example payload ideas.</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>Feature/API: [short description]. Generate security test cases for:
+
+1. Auth: unauthorized access, privilege escalation, session (2–3 each)
+2. Input: SQLi, XSS, path traversal (1–2 each, with example payload idea)
+3. Business logic: e.g. bypass payment, change another user's data (2)
+4. Info disclosure: error messages, debug endpoints (1–2)
+
+Output: test name | steps | expected (secure) behavior | severity. Table.</code></pre>
+        </div>
+      </article>
+
+      <article class="prompt-card">
+        <h2>Prompt injection test inputs</h2>
+        <p>Generate inputs to test LLM-powered features for prompt injection and jailbreaks.</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>We have a [e.g. customer-support] chatbot. Generate 10 prompt-injection style inputs that might try to:
+- Override system instructions
+- Reveal system prompt or other users' data
+- Force output in a different format or role
+
+Output as a numbered list. We'll run these in test and check the bot refuses or stays in character.</code></pre>
+        </div>
+      </article>
+
+      <article class="prompt-card">
+        <h2>SAST/DAST finding triage</h2>
+        <p>Summarize a security finding and get a fix or priority suggestion. Use anonymized snippets only.</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>Security finding (anonymized): [paste rule, file/endpoint, short context—no secrets].
+
+Is this likely a true positive? One-line fix or mitigation. Severity suggestion (critical/high/medium/low) with one-line reason. Do not paste full source.</code></pre>
+        </div>
+      </article>
+
+      <h3 class="section-heading">API testing (more)</h3>
+
+      <article class="prompt-card">
+        <h2>API contract test matrix from OpenAPI</h2>
+        <p>Get a full scenario matrix: status codes, request variants, and which response fields to assert.</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>OpenAPI path: [paste path + request body schema + response codes].
+
+Generate contract-style test matrix:
+- Per documented status (200, 400, 401, 404): one test with request that triggers it
+- Missing required field → 400; wrong type → 400; valid minimal → 200 + list key response assertions
+
+Output: scenario | request (key fields) | expected status | assertions. Table.</code></pre>
+        </div>
+      </article>
+
+      <article class="prompt-card">
+        <h2>API negative / fuzz payloads</h2>
+        <p>Generate invalid and edge-case request bodies to stress validation and error handling.</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>Request body schema or sample: [paste].
+
+Generate 5 negative cases: missing required field, wrong type, empty string for number, null for required, value over max length. For each: short description + example JSON. Then 3 fuzz-style: huge string, unicode, empty object.</code></pre>
+        </div>
+      </article>
+
+      <article class="prompt-card">
+        <h2>API seed data design</h2>
+        <p>Get minimal seed entities (users, orders, etc.) for API tests. You implement the seed script.</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>Our API tests need: [e.g. 1 admin, 2 users, 3 orders in different states]. We create via API/DB.
+
+Suggest minimal seed data (fields + example values) in creation order. Output as table or JSON. Use fake data only (test@example.com).</code></pre>
+        </div>
+      </article>
+
+      <article class="prompt-card">
+        <h2>API change impact on tests</h2>
+        <p>From a list of API changes, get which tests might break and what to update.</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>API changed: [list new/removed/changed fields or endpoints].
+
+Our tests: [short description, e.g. "one file per endpoint, 200/400/401/404"]. Which tests might break? What to add (e.g. new assertions), remove, or update? Bullet list.</code></pre>
+        </div>
+      </article>
+    </section>
+
+    <p class="note">More in the blog: <a href="/blog/prompts-that-work-for-test-cases">Prompts that work</a>, <a href="/blog/reviewing-ai-generated-tests">Reviewing AI-generated tests</a>, <a href="/blog/ai-test-data-generation">AI test data</a>, <a href="/blog/performance-testing-with-ai">Performance with AI</a>, <a href="/blog/ui-testing-with-ai">UI testing with AI</a>, <a href="/blog/jira-and-ai-for-testing">Jira + AI</a>, <a href="/blog/security-testing-with-ai">Security with AI</a>, <a href="/blog/api-testing-with-ai-deep-dive">More API testing with AI</a>.</p>
+  </div>
+</BaseLayout>
+
+<style>
+  .page h1 {
+    margin: 0 0 0.5rem 0;
+  }
+
+  .lead {
+    color: var(--muted);
+    margin: 0 0 2rem 0;
+  }
+
+  .prompt-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .section-heading {
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--accent);
+    margin: 2rem 0 0.5rem 0;
+    padding-bottom: 0.25rem;
+  }
+
+  .section-heading:first-of-type {
+    margin-top: 0;
+  }
+
+  .prompt-card h2 {
+    font-size: 1.2rem;
+    margin: 0 0 0.5rem 0;
+  }
+
+  .prompt-card p {
+    color: var(--muted);
+    margin: 0 0 1rem 0;
+    font-size: 0.95rem;
+  }
+
+  .prompt-block {
+    position: relative;
+  }
+
+  .prompt-label {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.75rem;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--accent);
+  }
+
+  .prompt-block pre {
+    margin: 0;
+  }
+
+  .note {
+    margin-top: 2.5rem;
+    padding: 1rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+</style>
