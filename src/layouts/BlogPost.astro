@@ -1,85 +1,147 @@
 ---
 import BaseLayout from './BaseLayout.astro';
 const { frontmatter } = Astro.props;
+
+const tagColor: Record<string, string> = {
+  opinion: 'badge-gray',
+  tutorial: 'badge-green',
+  prompt: 'badge-blue',
+  tool: 'badge-blue',
+};
 ---
 
 <BaseLayout title={frontmatter.title} description={frontmatter.description}>
   <article class="post">
     <header class="post-header">
-      <h1>{frontmatter.title}</h1>
-      <p class="meta">
-        <time datetime={frontmatter.pubDate.toISOString()}>
+      <div class="post-meta-top">
+        <time datetime={frontmatter.pubDate.toISOString()} class="post-date">
           {frontmatter.pubDate.toLocaleDateString('en-US', { dateStyle: 'long' })}
         </time>
-        {frontmatter.author && <span> · {frontmatter.author}</span>}
-      </p>
+        {frontmatter.aiTwist && (
+          <span class={`badge ${tagColor[frontmatter.aiTwist] ?? 'badge-gray'}`}>
+            {frontmatter.aiTwist}
+          </span>
+        )}
+      </div>
+      <h1>{frontmatter.title}</h1>
+      {frontmatter.description && <p class="post-desc">{frontmatter.description}</p>}
       {frontmatter.tags?.length ? (
         <ul class="tags" aria-label="Tags">
-          {frontmatter.tags.map((tag) => (
-            <li><a href={`/blog?tag=${tag}`}>{tag}</a></li>
+          {frontmatter.tags.map((tag: string) => (
+            <li><span class="tag">{tag}</span></li>
           ))}
         </ul>
       ) : null}
+      <div class="post-divider"></div>
     </header>
     <div class="post-body">
       <slot />
+    </div>
+    <div class="post-footer">
+      <a href="/" class="back-link">← Back to blog</a>
     </div>
   </article>
 </BaseLayout>
 
 <style>
-  .post-header {
-    margin-bottom: 2rem;
+  .post { max-width: 700px; margin: 0 auto; }
+
+  .post-meta-top {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .post-date {
+    font-size: 0.88rem;
+    color: var(--muted);
   }
 
   .post-header h1 {
-    font-size: 2rem;
-    font-weight: 700;
-    margin: 0 0 0.5rem 0;
-    line-height: 1.25;
+    font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.2;
+    margin-bottom: 0.75rem;
   }
 
-  .meta {
-    color: var(--muted);
-    font-size: 0.95rem;
-    margin: 0;
+  .post-desc {
+    font-size: 1.05rem;
+    color: var(--muted2);
+    line-height: 1.6;
+    margin-bottom: 1rem;
   }
 
   .tags {
     list-style: none;
-    padding: 0;
-    margin: 0.75rem 0 0 0;
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem;
+    gap: 0.4rem;
+    margin-bottom: 1rem;
   }
 
-  .tags a {
-    font-size: 0.85rem;
-    color: var(--muted);
-    text-decoration: none;
-    padding: 0.2em 0.6em;
-    background: var(--surface);
-    border: 1px solid var(--border);
+  .tag {
+    font-size: 0.78rem;
+    padding: 0.2em 0.65em;
+    background: var(--surface2);
+    border: 1px solid var(--border2);
     border-radius: 6px;
+    color: var(--muted2);
   }
 
-  .tags a:hover {
-    color: var(--accent);
-    border-color: var(--accent-dim);
+  .post-divider {
+    height: 1px;
+    background: linear-gradient(90deg, var(--accent-dim) 0%, transparent 100%);
+    margin: 1.5rem 0 2rem;
+    opacity: 0.4;
   }
 
-  .post-body {
-    font-size: 1.05rem;
-  }
+  /* POST BODY */
+  .post-body { font-size: 1.02rem; }
 
   .post-body :global(h2) {
-    margin-top: 2rem;
-    font-size: 1.35rem;
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin: 2.25rem 0 0.75rem;
+    padding-top: 0.25rem;
+    border-top: 1px solid var(--border);
+    padding-top: 1.5rem;
   }
 
   .post-body :global(h3) {
-    margin-top: 1.5rem;
-    font-size: 1.15rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin: 1.75rem 0 0.5rem;
+    color: var(--muted2);
   }
+
+  .post-body :global(p) { margin: 0.85rem 0; }
+
+  .post-body :global(ul),
+  .post-body :global(ol) {
+    padding-left: 1.5rem;
+    margin: 0.75rem 0;
+  }
+
+  .post-body :global(li) { margin: 0.35rem 0; }
+
+  .post-body :global(strong) { color: var(--text); }
+
+  .post-body :global(a) { color: var(--accent); }
+
+  .post-footer {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .back-link {
+    font-size: 0.92rem;
+    color: var(--muted);
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .back-link:hover { color: var(--accent); text-decoration: none; }
 </style>

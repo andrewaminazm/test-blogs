@@ -1,99 +1,549 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const categories = [
+  {
+    icon: '🤖',
+    heading: 'LLMs & Chat AI',
+    desc: 'General-purpose large language models you can prompt for test design, code, and analysis.',
+    tools: [
+      {
+        name: 'ChatGPT (OpenAI)',
+        tag: 'Prompt-driven',
+        tagClass: 'tag-green',
+        url: 'https://chat.openai.com',
+        desc: 'Best for: test-case generation, user-story to AC, exploratory charters, bug reports. Use GPT-4o for complex test design. Paste real context (spec, API, story) for best results.',
+      },
+      {
+        name: 'Claude (Anthropic)',
+        tag: 'Prompt-driven',
+        tagClass: 'tag-green',
+        url: 'https://claude.ai',
+        desc: 'Strong at long-context analysis (paste full specs or code), writing clear test plans, and reviewing test code. Often more careful with nuance than GPT.',
+      },
+      {
+        name: 'Google Gemini',
+        tag: 'Prompt-driven',
+        tagClass: 'tag-green',
+        url: 'https://gemini.google.com',
+        desc: 'Good for multimodal tasks—can analyze screenshots, mockups, or UI images alongside text. Useful for visual test design and accessibility review prompts.',
+      },
+      {
+        name: 'Meta Llama (open source)',
+        tag: 'Self-hosted',
+        tagClass: 'tag-gray',
+        url: 'https://ollama.com',
+        desc: 'Run locally via Ollama. Good when you can\'t send code or test data to cloud APIs. Use for private/internal prompt pipelines and test-data generation scripts.',
+      },
+    ],
+  },
+  {
+    icon: '💻',
+    heading: 'In-IDE AI Assistants',
+    desc: 'AI coding tools that help you write, review, and refactor test code directly in your editor.',
+    tools: [
+      {
+        name: 'GitHub Copilot',
+        tag: 'In-IDE',
+        tagClass: 'tag-blue',
+        url: 'https://github.com/features/copilot',
+        desc: 'Write Playwright, Selenium, Cypress, or Jest tests with AI suggestions. Works best with clear test names and step comments. Also auto-completes assertions and fixtures.',
+      },
+      {
+        name: 'Cursor',
+        tag: 'In-IDE',
+        tagClass: 'tag-blue',
+        url: 'https://www.cursor.com',
+        desc: 'AI-first code editor. Select failing test code and ask Cursor to fix it; highlight a selector and ask for a stable alternative. Chat with your whole test codebase.',
+      },
+      {
+        name: 'Tabnine',
+        tag: 'In-IDE',
+        tagClass: 'tag-blue',
+        url: 'https://www.tabnine.com',
+        desc: 'Privacy-focused autocomplete. Can run on-premise. Good for teams that need AI code assist without sending code to external APIs.',
+      },
+      {
+        name: 'Codeium',
+        tag: 'In-IDE',
+        tagClass: 'tag-blue',
+        url: 'https://codeium.com',
+        desc: 'Free alternative to Copilot. Supports most IDEs and test frameworks. Useful for generating repetitive test boilerplate and parameterized test cases.',
+      },
+    ],
+  },
+  {
+    icon: '🧪',
+    heading: 'AI Test Automation Platforms',
+    desc: 'Dedicated platforms with self-healing selectors, test generation, and AI-driven maintenance.',
+    tools: [
+      {
+        name: 'Testim',
+        tag: 'Platform',
+        tagClass: 'tag-purple',
+        url: 'https://www.testim.io',
+        desc: 'Self-healing UI tests, low-code flows, and AI-assisted selector stability. Integrates with CI. Best evaluated on a small real suite first—measure how often auto-heal needs review.',
+      },
+      {
+        name: 'Mabl',
+        tag: 'Platform',
+        tagClass: 'tag-purple',
+        url: 'https://www.mabl.com',
+        desc: 'Cloud-based AI testing: auto-healing, visual checks, API testing, and accessibility. Good for teams wanting one platform for functional + visual + accessibility.',
+      },
+      {
+        name: 'Functionize',
+        tag: 'Platform',
+        tagClass: 'tag-purple',
+        url: 'https://www.functionize.com',
+        desc: 'NLP-based test creation (describe a test in English) and ML-driven maintenance. Targets teams with little coding background or large legacy UI suites.',
+      },
+      {
+        name: 'Katalon',
+        tag: 'Platform',
+        tagClass: 'tag-purple',
+        url: 'https://katalon.com',
+        desc: 'Full test platform with AI features (self-healing, smart wait, test analytics). Supports Web, API, Mobile, and Desktop. Good for teams wanting a single all-in-one tool.',
+      },
+    ],
+  },
+  {
+    icon: '👁',
+    heading: 'Visual & UI AI Testing',
+    desc: 'AI-powered visual regression and visual validation tools.',
+    tools: [
+      {
+        name: 'Applitools Eyes',
+        tag: 'Visual',
+        tagClass: 'tag-yellow',
+        url: 'https://applitools.com',
+        desc: 'Visual AI that ignores non-functional changes (rendering diffs, timestamps) and flags real layout regressions. Works with Playwright, Selenium, Cypress, WebdriverIO.',
+      },
+      {
+        name: 'Percy (BrowserStack)',
+        tag: 'Visual',
+        tagClass: 'tag-yellow',
+        url: 'https://percy.io',
+        desc: 'Visual review in CI—snapshots on each PR, AI-assisted noise filtering. Good for component-level visual regression in web apps. Integrates with Storybook.',
+      },
+      {
+        name: 'Screener (Sauce Labs)',
+        tag: 'Visual',
+        tagClass: 'tag-yellow',
+        url: 'https://saucelabs.com/platform/visual-testing',
+        desc: 'Visual testing integrated with Sauce Labs real device cloud. Useful when cross-browser + visual regression are both needed in one pipeline.',
+      },
+    ],
+  },
+  {
+    icon: '⚡',
+    heading: 'Performance & Load Testing AI',
+    desc: 'AI features in load testing tools and AI-assisted performance analysis.',
+    tools: [
+      {
+        name: 'k6 + AI scripting',
+        tag: 'Performance',
+        tagClass: 'tag-orange',
+        url: 'https://k6.io',
+        desc: 'Use ChatGPT or Copilot to generate k6 scripts from scenario descriptions. k6 itself is scriptable JS/TS; AI drafts the structure and stages, you add correlation and thresholds.',
+      },
+      {
+        name: 'JMeter + LLM',
+        tag: 'Performance',
+        tagClass: 'tag-orange',
+        url: 'https://jmeter.apache.org',
+        desc: 'Use AI to design test plans and generate JMX structure. JMeter handles execution; LLMs help with scenario design, think times, and result interpretation. See Prompt library for JMeter prompts.',
+      },
+      {
+        name: 'Gatling',
+        tag: 'Performance',
+        tagClass: 'tag-orange',
+        url: 'https://gatling.io',
+        desc: 'Code-based load testing (Scala/Java/JS). AI can help write simulation code from plain-language descriptions. Detailed HTML reports and CI-friendly.',
+      },
+      {
+        name: 'Grafana k6 Cloud',
+        tag: 'Performance',
+        tagClass: 'tag-orange',
+        url: 'https://grafana.com/products/cloud/k6/',
+        desc: 'Cloud execution + AI-assisted test analysis and anomaly detection in dashboards. Useful for trend analysis and automatically spotting regressions across runs.',
+      },
+    ],
+  },
+  {
+    icon: '🔒',
+    heading: 'Security Testing AI',
+    desc: 'AI-assisted security scanning, fuzzing, and vulnerability analysis.',
+    tools: [
+      {
+        name: 'OWASP ZAP + AI',
+        tag: 'Security',
+        tagClass: 'tag-red',
+        url: 'https://www.zaproxy.org',
+        desc: 'Open-source DAST scanner. Use AI to interpret ZAP findings, explain CVEs in plain language, and prioritize fixes. ZAP itself has a scripting engine for custom rules.',
+      },
+      {
+        name: 'Burp Suite + AI',
+        tag: 'Security',
+        tagClass: 'tag-red',
+        url: 'https://portswigger.net/burp',
+        desc: 'Professional web security scanner. Paste anonymized Burp findings into ChatGPT/Claude to explain them and suggest remediation. Extensions marketplace for custom AI integrations.',
+      },
+      {
+        name: 'Snyk',
+        tag: 'Security',
+        tagClass: 'tag-red',
+        url: 'https://snyk.io',
+        desc: 'AI-powered vulnerability scanning for code, dependencies, containers, and IaC. Integrates into CI/CD and IDE. Explains findings and suggests fixes automatically.',
+      },
+      {
+        name: 'GitHub Advanced Security',
+        tag: 'Security',
+        tagClass: 'tag-red',
+        url: 'https://github.com/features/security',
+        desc: 'Code scanning (CodeQL), secret scanning, dependency review with AI-suggested fixes. Built into GitHub Actions. Good for SAST and supply chain security in CI.',
+      },
+    ],
+  },
+  {
+    icon: '📊',
+    heading: 'Test Management & Jira AI',
+    desc: 'AI features in test management and project tracking tools.',
+    tools: [
+      {
+        name: 'Jira + AI (Atlassian Intelligence)',
+        tag: 'Management',
+        tagClass: 'tag-blue',
+        url: 'https://www.atlassian.com/software/jira',
+        desc: 'AI-written descriptions, smart summaries of issues, and auto-suggest for acceptance criteria. Use with Zephyr or Xray for test case management linked to Jira stories.',
+      },
+      {
+        name: 'Xray (Jira plugin)',
+        tag: 'Management',
+        tagClass: 'tag-blue',
+        url: 'https://www.getxray.app',
+        desc: 'Test management inside Jira: test cases, test plans, execution tracking. Use AI to generate test cases from Jira ACs and link back for full traceability.',
+      },
+      {
+        name: 'Zephyr Scale',
+        tag: 'Management',
+        tagClass: 'tag-blue',
+        url: 'https://smartbear.com/test-management/zephyr-scale/',
+        desc: 'Test case management with Jira integration, test coverage reports, and CI integration. Combine with AI prompts to bulk-create test cases from requirements.',
+      },
+      {
+        name: 'TestRail',
+        tag: 'Management',
+        tagClass: 'tag-blue',
+        url: 'https://www.testrail.com',
+        desc: 'Standalone test management. Use AI to generate test case text, then paste into TestRail. API allows automation of test result reporting from CI runs.',
+      },
+    ],
+  },
+  {
+    icon: '📡',
+    heading: 'API Testing AI',
+    desc: 'AI features and integrations for API test design and automation.',
+    tools: [
+      {
+        name: 'Postman + AI',
+        tag: 'API',
+        tagClass: 'tag-green',
+        url: 'https://www.postman.com',
+        desc: 'Postman AI (Postbot) can generate test scripts from request/response, explain collections, and suggest assertions. Use Newman + AI-generated collections for CI performance runs.',
+      },
+      {
+        name: 'REST Assured + AI',
+        tag: 'API',
+        tagClass: 'tag-green',
+        url: 'https://rest-assured.io',
+        desc: 'Java library for API testing. Use Copilot or ChatGPT to generate REST Assured test methods from an OpenAPI spec or a Postman collection. Good for Java/Spring projects.',
+      },
+      {
+        name: 'Pact (Contract Testing)',
+        tag: 'API',
+        tagClass: 'tag-green',
+        url: 'https://pact.io',
+        desc: 'Consumer-driven contract testing. Use AI to generate pact files from API docs, verify contract compliance, and design scenarios for service integration testing.',
+      },
+      {
+        name: 'Stoplight / Spectral',
+        tag: 'API',
+        tagClass: 'tag-green',
+        url: 'https://stoplight.io',
+        desc: 'API design and linting. Use AI to review OpenAPI specs for testability issues, missing error codes, or vague descriptions before writing tests.',
+      },
+    ],
+  },
+  {
+    icon: '📱',
+    heading: 'Mobile Testing AI',
+    desc: 'AI tools and integrations for mobile test automation and device testing.',
+    tools: [
+      {
+        name: 'Appium + AI',
+        tag: 'Mobile',
+        tagClass: 'tag-purple',
+        url: 'https://appium.io',
+        desc: 'Open-source mobile automation. Use Copilot to generate Appium test code from step descriptions. AI helps write locator strategies for iOS and Android elements.',
+      },
+      {
+        name: 'BrowserStack App Automate',
+        tag: 'Mobile',
+        tagClass: 'tag-purple',
+        url: 'https://www.browserstack.com/app-automate',
+        desc: 'Real device cloud + AI-assisted test observations. Percy for visual regression on mobile. Useful for compatibility matrix testing across OS versions and device sizes.',
+      },
+      {
+        name: 'Sauce Labs (Real Device Cloud)',
+        tag: 'Mobile',
+        tagClass: 'tag-purple',
+        url: 'https://saucelabs.com',
+        desc: 'Real and emulated devices + AI test analysis and visual testing. Integrates with Appium, Espresso, XCUITest. Good for cross-platform mobile regression.',
+      },
+      {
+        name: 'Maestro',
+        tag: 'Mobile',
+        tagClass: 'tag-purple',
+        url: 'https://maestro.mobile.dev',
+        desc: 'Simple mobile UI testing with YAML-based flows. Use AI to generate YAML test flows from plain-language descriptions. Lightweight and fast for mobile smoke suites.',
+      },
+    ],
+  },
+  {
+    icon: '🔁',
+    heading: 'CI/CD & Test Infrastructure',
+    desc: 'AI integrations and tools for running, reporting, and maintaining tests in pipelines.',
+    tools: [
+      {
+        name: 'GitHub Actions + AI',
+        tag: 'CI/CD',
+        tagClass: 'tag-gray',
+        url: 'https://github.com/features/actions',
+        desc: 'Use Copilot to generate workflow YAML for test pipelines. AI can suggest parallelization, caching strategies, and artifact publishing. See Prompt library for GitHub Actions prompts.',
+      },
+      {
+        name: 'Jenkins + LLM',
+        tag: 'CI/CD',
+        tagClass: 'tag-gray',
+        url: 'https://www.jenkins.io',
+        desc: 'Use AI to generate Jenkinsfiles, debug pipeline failures by pasting logs into ChatGPT, and design stage structure for complex test pipelines.',
+      },
+      {
+        name: 'Allure Report',
+        tag: 'Reporting',
+        tagClass: 'tag-gray',
+        url: 'https://allurereport.org',
+        desc: 'Rich test reports with history, trends, and failure analytics. Use AI to summarize Allure results for stakeholder reports or to triage clusters of similar failures.',
+      },
+      {
+        name: 'Evidently AI',
+        tag: 'ML Monitoring',
+        tagClass: 'tag-gray',
+        url: 'https://www.evidentlyai.com',
+        desc: 'Open-source ML model and data monitoring. Detects data drift, prediction drift, and quality regressions in production AI systems. Key for ISTQB AI testing — monitoring layer.',
+      },
+    ],
+  },
+];
 ---
 
 <BaseLayout title="Tools we use — AI × Testing" description="LLMs, Copilot, and AI-powered QA platforms for testing.">
   <div class="page">
-    <h1>Tools we use</h1>
-    <p class="lead">AI tools that actually get used for test design, generation, and automation. Updated as we try new things.</p>
 
-    <section class="tools-grid">
-      <article class="tool-card">
-        <h2>LLMs (ChatGPT, Claude, etc.)</h2>
-        <p>Use for: test-case generation from requirements, test data ideas, bug report drafting, and prompt-based test design. Best when you paste concrete context (user story, API spec, error message).</p>
-        <span class="tag">Prompt-driven</span>
-      </article>
+    <div class="page-header">
+      <h1>Tools we use</h1>
+      <p class="lead">AI tools that actually get used for test design, generation, automation, and analysis. Organized by category — updated as new tools are worth trying.</p>
+    </div>
 
-      <article class="tool-card">
-        <h2>GitHub Copilot / Cursor</h2>
-        <p>Use for: writing and refactoring test code (Playwright, Selenium, Jest, etc.), generating assertions, and fixing broken tests after UI changes. Pair with clear comments or spec-style descriptions.</p>
-        <span class="tag">In-IDE</span>
-      </article>
+    <div class="category-nav">
+      {categories.map(c => (
+        <a href={`#${c.heading.toLowerCase().replace(/[^a-z0-9]+/g,'-')}`} class="cat-pill">{c.icon} {c.heading}</a>
+      ))}
+    </div>
 
-      <article class="tool-card">
-        <h2>Testim / Mabl / Functionize</h2>
-        <p>Dedicated AI testing platforms: self-healing selectors, codeless or low-code flows, and sometimes test generation. Good to evaluate with a small suite first and measure maintenance cost.</p>
-        <span class="tag">Platform</span>
-      </article>
+    {categories.map(cat => (
+      <section class="category-section" id={cat.heading.toLowerCase().replace(/[^a-z0-9]+/g,'-')}>
+        <div class="cat-header">
+          <span class="cat-icon">{cat.icon}</span>
+          <div>
+            <h2>{cat.heading}</h2>
+            <p class="cat-desc">{cat.desc}</p>
+          </div>
+        </div>
+        <div class="tools-grid">
+          {cat.tools.map(tool => (
+            <a href={tool.url} target="_blank" rel="noopener noreferrer" class="tool-card">
+              <div class="tool-top">
+                <span class="tool-name">{tool.name}</span>
+                <span class={`tag ${tool.tagClass}`}>{tool.tag}</span>
+              </div>
+              <p class="tool-desc">{tool.desc}</p>
+              <span class="tool-link-hint">Visit →</span>
+            </a>
+          ))}
+        </div>
+      </section>
+    ))}
 
-      <article class="tool-card">
-        <h2>Applitools (visual + AI)</h2>
-        <p>Visual regression with AI to ignore non-functional changes. Use when UI stability matters and you want to reduce noisy visual diffs.</p>
-        <span class="tag">Visual</span>
-      </article>
+    <div class="tools-note">
+      <span class="note-icon">💡</span>
+      <div>
+        <strong>Deep dives in the blog:</strong>
+        <a href="/blog/what-is-ai-testing">What AI testing means</a> ·
+        <a href="/blog/copilot-playwright-quick-win">Copilot + Playwright</a> ·
+        <a href="/blog/performance-testing-with-ai">Performance</a> ·
+        <a href="/blog/ui-testing-with-ai">UI testing</a> ·
+        <a href="/blog/security-testing-with-ai">Security</a> ·
+        <a href="/blog/api-testing-with-ai-deep-dive">API</a> ·
+        <a href="/blog/jira-and-ai-for-testing">Jira</a> ·
+        <a href="/blog/istqb-ai-testing-fundamentals">ISTQB AI</a>
+      </div>
+    </div>
 
-      <article class="tool-card">
-        <h2>OpenAI / Anthropic APIs</h2>
-        <p>Use LLM APIs from your own scripts to generate test cases, test data, or to review test code. Good for custom pipelines, CI, or internal tools. Keep prompts and outputs in version control for reproducibility.</p>
-        <span class="tag">API</span>
-      </article>
-    </section>
-
-    <p class="note">Deep dives in the blog: <a href="/blog/what-is-ai-testing">What AI testing means</a>, <a href="/blog/copilot-playwright-quick-win">Copilot + Playwright</a>, <a href="/blog/ai-test-data-generation">AI test data</a>, <a href="/blog/performance-testing-with-ai">Performance with AI</a>, <a href="/blog/ui-testing-with-ai">UI testing with AI</a>, <a href="/blog/jira-and-ai-for-testing">Jira + AI</a>, <a href="/blog/security-testing-with-ai">Security with AI</a>, <a href="/blog/api-testing-with-ai-deep-dive">More API testing with AI</a>. More tool reviews as we add posts tagged <code>aiTwist: tool</code>.</p>
   </div>
 </BaseLayout>
 
 <style>
-  .page h1 {
-    margin: 0 0 0.5rem 0;
+  .page-header { margin-bottom: 2rem; }
+  .page-header h1 { font-size: 2rem; font-weight: 800; margin-bottom: 0.5rem; }
+  .lead { color: var(--muted2); font-size: 1rem; max-width: 600px; line-height: 1.65; }
+
+  /* CATEGORY NAV */
+  .category-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--border);
   }
 
-  .lead {
-    color: var(--muted);
-    margin: 0 0 2rem 0;
+  .cat-pill {
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 0.35em 0.85em;
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 20px;
+    color: var(--muted2);
+    text-decoration: none;
+    transition: border-color 0.15s, color 0.15s, background 0.15s;
+    white-space: nowrap;
   }
 
+  .cat-pill:hover { color: var(--accent); border-color: var(--accent-dim); background: rgba(74,222,128,0.06); text-decoration: none; }
+
+  /* CATEGORY SECTION */
+  .category-section { margin-bottom: 3.5rem; }
+
+  .cat-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .cat-icon { font-size: 1.75rem; line-height: 1; flex-shrink: 0; margin-top: 0.1rem; }
+
+  .cat-header h2 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+  }
+
+  .cat-desc { font-size: 0.9rem; color: var(--muted); line-height: 1.55; }
+
+  /* TOOL GRID */
   .tools-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1.25rem;
+    grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+    gap: 1rem;
   }
 
   .tool-card {
-    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    padding: 1.1rem 1.25rem;
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 10px;
+    border-radius: var(--radius);
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
   }
 
-  .tool-card h2 {
-    font-size: 1.1rem;
-    margin: 0 0 0.5rem 0;
+  .tool-card:hover {
+    border-color: var(--accent-dim);
+    box-shadow: 0 0 0 1px var(--accent-dim), 0 6px 20px rgba(0,0,0,0.25);
+    transform: translateY(-2px);
+    text-decoration: none;
   }
 
-  .tool-card p {
-    font-size: 0.95rem;
+  .tool-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .tool-name {
+    font-weight: 700;
+    font-size: 0.97rem;
+    color: var(--text);
+  }
+
+  .tool-desc {
+    font-size: 0.87rem;
     color: var(--muted);
-    margin: 0 0 0.75rem 0;
-    line-height: 1.5;
+    line-height: 1.55;
+    flex: 1;
+    margin: 0 0 0.75rem;
   }
 
-  .tag {
+  .tool-link-hint {
     font-size: 0.8rem;
-    padding: 0.2em 0.5em;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 4px;
+    color: var(--accent);
+    font-weight: 600;
+    margin-top: auto;
+  }
+
+  /* TAGS */
+  .tag {
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 0.2em 0.6em;
+    border-radius: 5px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .tag-green  { background: rgba(74,222,128,0.12); color: var(--accent); border: 1px solid rgba(74,222,128,0.2); }
+  .tag-blue   { background: rgba(56,189,248,0.12); color: var(--accent2); border: 1px solid rgba(56,189,248,0.2); }
+  .tag-purple { background: rgba(167,139,250,0.12); color: #a78bfa; border: 1px solid rgba(167,139,250,0.2); }
+  .tag-yellow { background: rgba(250,204,21,0.10); color: #facc15; border: 1px solid rgba(250,204,21,0.2); }
+  .tag-orange { background: rgba(251,146,60,0.10); color: #fb923c; border: 1px solid rgba(251,146,60,0.2); }
+  .tag-red    { background: rgba(248,113,113,0.12); color: #f87171; border: 1px solid rgba(248,113,113,0.2); }
+  .tag-gray   { background: var(--surface2); color: var(--muted2); border: 1px solid var(--border2); }
+
+  /* NOTE */
+  .tools-note {
+    display: flex;
+    gap: 0.75rem;
+    padding: 1.1rem 1.25rem;
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius);
+    font-size: 0.9rem;
+    line-height: 1.65;
     color: var(--muted);
   }
 
-  .note {
-    margin-top: 2.5rem;
-    padding: 1rem;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    font-size: 0.9rem;
-    color: var(--muted);
-  }
+  .note-icon { font-size: 1.1rem; flex-shrink: 0; }
+  .tools-note strong { color: var(--text); }
+  .tools-note a { color: var(--accent); }
+  .tools-note a:hover { text-decoration: underline; }
 </style>

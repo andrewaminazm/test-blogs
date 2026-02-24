@@ -4,132 +4,302 @@ import { getCollection } from 'astro:content';
 const posts = (await getCollection('blog'))
   .filter((p) => !p.data.draft)
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const tagColor: Record<string, string> = {
+  opinion: 'badge-gray',
+  tutorial: 'badge-green',
+  prompt: 'badge-blue',
+  tool: 'badge-blue',
+};
 ---
 
 <BaseLayout title="AI × Testing — Blog" description="Practical AI for software testers. Prompts, tools, and real results.">
   <div class="home">
-    <h1>Testing with AI</h1>
-    <p class="lead">Prompts, tools, and real results for testers and QA. No hype—just what works.</p>
 
-    <section class="promo-links">
-      <a href="/prompts/" class="card">
-        <span class="card-label">Prompt library</span>
-        <span class="card-title">Copy-paste prompts</span>
-        <span class="card-desc">Test-case generation, review, and maintenance.</span>
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-chip">⚡ ISTQB AI Testing · Prompts · Automation</div>
+      <h1>Testing with <span class="grad-text">AI</span></h1>
+      <p class="lead">Practical prompts, tools, and guides for testers and QA engineers. No hype — just what works in real projects.</p>
+      <div class="hero-actions">
+        <a href="/prompts/" class="btn btn-primary">Browse Prompts</a>
+        <a href="/tools/" class="btn btn-ghost">View Tools</a>
+      </div>
+    </section>
+
+    <!-- PROMO CARDS -->
+    <section class="promo-grid">
+      <a href="/prompts/" class="promo-card">
+        <div class="promo-icon">📋</div>
+        <div>
+          <div class="promo-label">Prompt library</div>
+          <div class="promo-title">Copy-paste prompts</div>
+          <div class="promo-desc">Test cases, BRD, CI/CD, security, Jira, JMeter and more.</div>
+        </div>
       </a>
-      <a href="/tools/" class="card">
-        <span class="card-label">Tools we use</span>
-        <span class="card-title">AI testing tools</span>
-        <span class="card-desc">LLMs, Copilot, and dedicated AI QA platforms.</span>
+      <a href="/tools/" class="promo-card">
+        <div class="promo-icon">🛠</div>
+        <div>
+          <div class="promo-label">Tools we use</div>
+          <div class="promo-title">AI testing tools</div>
+          <div class="promo-desc">LLMs, Copilot, Testim, Applitools, and dedicated QA platforms.</div>
+        </div>
+      </a>
+      <a href="/about/" class="promo-card">
+        <div class="promo-icon">👤</div>
+        <div>
+          <div class="promo-label">Author</div>
+          <div class="promo-title">About me</div>
+          <div class="promo-desc">Senior Automation Test Engineer · 10+ years QA.</div>
+        </div>
       </a>
     </section>
 
+    <!-- POSTS -->
     <section class="posts-section">
-      <h2>Latest posts</h2>
+      <div class="posts-header">
+        <h2>Latest posts</h2>
+        <span class="posts-count">{posts.length} articles</span>
+      </div>
       <ul class="post-list">
         {posts.map((post) => (
           <li>
-            <a href={`/blog/${post.slug}`}>
-              <span class="post-title">{post.data.title}</span>
-              <span class="post-meta">
-                {post.data.pubDate.toLocaleDateString('en-US', { dateStyle: 'medium' })}
-                {post.data.aiTwist ? ` · ${post.data.aiTwist}` : ''}
-              </span>
+            <a href={`/blog/${post.slug}`} class="post-link">
+              <div class="post-main">
+                <span class="post-title">{post.data.title}</span>
+                <span class="post-desc">{post.data.description}</span>
+              </div>
+              <div class="post-right">
+                <span class="post-date">
+                  {post.data.pubDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                </span>
+                {post.data.aiTwist && (
+                  <span class={`badge ${tagColor[post.data.aiTwist] ?? 'badge-gray'}`}>
+                    {post.data.aiTwist}
+                  </span>
+                )}
+              </div>
             </a>
           </li>
         ))}
       </ul>
     </section>
+
   </div>
 </BaseLayout>
 
 <style>
-  .home {
-    padding: 0;
+  /* HERO */
+  .hero {
+    text-align: center;
+    padding: 3.5rem 1rem 3rem;
+  }
+
+  .hero-chip {
+    display: inline-block;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: rgba(74,222,128,0.08);
+    border: 1px solid rgba(74,222,128,0.18);
+    border-radius: 20px;
+    padding: 0.3em 1em;
+    margin-bottom: 1.25rem;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.2rem, 5vw, 3.2rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin-bottom: 1rem;
+  }
+
+  .grad-text {
+    background: var(--grad1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 
   .lead {
-    font-size: 1.15rem;
-    color: var(--muted);
-    margin: 0 0 2rem 0;
+    font-size: 1.1rem;
+    color: var(--muted2);
+    max-width: 520px;
+    margin: 0 auto 2rem;
+    line-height: 1.65;
   }
 
-  .promo-links {
+  .hero-actions {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.6rem 1.4rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-decoration: none;
+    transition: all 0.15s;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #07090f;
+  }
+
+  .btn-primary:hover {
+    background: #6ee7a0;
+    text-decoration: none;
+  }
+
+  .btn-ghost {
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border2);
+  }
+
+  .btn-ghost:hover {
+    background: var(--surface2);
+    text-decoration: none;
+  }
+
+  /* PROMO */
+  .promo-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
     gap: 1rem;
-    margin-bottom: 3rem;
+    margin-bottom: 3.5rem;
   }
 
-  .card {
-    display: block;
+  .promo-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
     padding: 1.25rem;
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 10px;
+    border-radius: var(--radius);
     text-decoration: none;
     color: inherit;
-    transition: border-color 0.2s, box-shadow 0.2s;
+    transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
   }
 
-  .card:hover {
+  .promo-card:hover {
     border-color: var(--accent-dim);
-    box-shadow: 0 0 0 1px var(--accent-dim);
+    box-shadow: 0 0 0 1px var(--accent-dim), 0 8px 24px rgba(0,0,0,0.3);
+    transform: translateY(-2px);
+    text-decoration: none;
   }
 
-  .card-label {
-    font-size: 0.8rem;
+  .promo-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+    line-height: 1;
+    margin-top: 0.1rem;
+  }
+
+  .promo-label {
+    font-size: 0.72rem;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.06em;
     color: var(--accent);
-    font-weight: 600;
-  }
-
-  .card-title {
-    display: block;
     font-weight: 700;
-    font-size: 1.1rem;
-    margin: 0.25rem 0 0.5rem 0;
+    margin-bottom: 0.2rem;
   }
 
-  .card-desc {
-    font-size: 0.95rem;
+  .promo-title {
+    font-weight: 700;
+    font-size: 1rem;
+    margin-bottom: 0.35rem;
+    color: var(--text);
+  }
+
+  .promo-desc {
+    font-size: 0.88rem;
     color: var(--muted);
+    line-height: 1.5;
   }
 
-  .posts-section h2 {
-    font-size: 1.25rem;
-    margin: 0 0 1rem 0;
+  /* POSTS */
+  .posts-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+
+  .posts-header h2 {
+    font-size: 1.2rem;
+    font-weight: 700;
+  }
+
+  .posts-count {
+    font-size: 0.85rem;
+    color: var(--muted);
   }
 
   .post-list {
     list-style: none;
-    padding: 0;
-    margin: 0;
   }
 
   .post-list li {
     border-bottom: 1px solid var(--border);
   }
 
-  .post-list a {
-    display: block;
-    padding: 1rem 0;
+  .post-list li:last-child { border-bottom: none; }
+
+  .post-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.5rem;
+    padding: 1.1rem 0;
     text-decoration: none;
     color: inherit;
+    transition: background 0.15s;
   }
 
-  .post-list a:hover .post-title {
-    color: var(--accent);
-  }
+  .post-link:hover .post-title { color: var(--accent); }
+  .post-link:hover { text-decoration: none; }
+
+  .post-main { flex: 1; min-width: 0; }
 
   .post-title {
     display: block;
     font-weight: 600;
+    font-size: 0.97rem;
+    margin-bottom: 0.25rem;
+    transition: color 0.15s;
   }
 
-  .post-meta {
-    font-size: 0.9rem;
+  .post-desc {
+    display: block;
+    font-size: 0.85rem;
     color: var(--muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .post-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.4rem;
+    flex-shrink: 0;
+  }
+
+  .post-date {
+    font-size: 0.82rem;
+    color: var(--muted);
+    white-space: nowrap;
   }
 </style>

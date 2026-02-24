@@ -5,6 +5,7 @@ interface Props {
 }
 
 const { title, description = 'Practical AI for software testers—prompts, tools, and real results.' } = Astro.props;
+const pathname = Astro.url.pathname;
 ---
 
 <!doctype html>
@@ -17,17 +18,20 @@ const { title, description = 'Practical AI for software testers—prompts, tools
     <title>{title}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Outfit:wght@400;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   </head>
   <body>
     <header class="site-header">
       <nav class="nav-inner">
-        <a href="/" class="logo">AI × Testing</a>
+        <a href="/" class="logo">
+          <span class="logo-icon">⚡</span>
+          <span>AI × Testing</span>
+        </a>
         <div class="nav-links">
-          <a href="/">Blog</a>
-          <a href="/prompts/">Prompts</a>
-          <a href="/tools/">Tools</a>
-          <a href="https://andrewcv.vercel.app/" target="_blank" rel="noopener noreferrer">Portfolio</a>
+          <a href="/" class:list={[{ active: pathname === '/' }]}>Blog</a>
+          <a href="/prompts/" class:list={[{ active: pathname.startsWith('/prompts') }]}>Prompts</a>
+          <a href="/tools/" class:list={[{ active: pathname.startsWith('/tools') }]}>Tools</a>
+          <a href="/about/" class:list={[{ active: pathname.startsWith('/about') }]}>About</a>
         </div>
       </nav>
     </header>
@@ -35,49 +39,68 @@ const { title, description = 'Practical AI for software testers—prompts, tools
       <slot />
     </main>
     <footer class="site-footer">
-      <p>Testing with AI — prompts, tools, and real results.</p>
+      <div class="footer-inner">
+        <span class="footer-logo">⚡ AI × Testing</span>
+        <span class="footer-sep">·</span>
+        <span>Prompts, tools, and real results for testers and QA.</span>
+      </div>
     </footer>
   </body>
 </html>
 
 <style is:global>
   :root {
-    --bg: #0c0f14;
-    --surface: #151a22;
-    --border: #252d38;
-    --text: #e6edf3;
-    --muted: #8b949e;
-    --accent: #3fb950;
-    --accent-dim: #238636;
+    --bg: #07090f;
+    --bg2: #0d1117;
+    --surface: #161b24;
+    --surface2: #1e2535;
+    --border: #21293a;
+    --border2: #2d3a50;
+    --text: #e2eaf6;
+    --muted: #7d8fa8;
+    --muted2: #a8b8cc;
+    --accent: #4ade80;
+    --accent-dim: #16a34a;
+    --accent2: #38bdf8;
+    --accent2-dim: #0369a1;
+    --grad1: linear-gradient(135deg, #4ade80 0%, #38bdf8 100%);
+    --radius: 12px;
   }
 
-  * {
-    box-sizing: border-box;
-  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
 
   html {
-    font-family: 'Outfit', system-ui, sans-serif;
+    font-family: 'Inter', system-ui, sans-serif;
     background: var(--bg);
     color: var(--text);
-    line-height: 1.6;
+    line-height: 1.7;
+    scroll-behavior: smooth;
   }
 
   body {
-    margin: 0;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    background:
+      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(74,222,128,0.07) 0%, transparent 70%),
+      var(--bg);
   }
 
+  /* ── HEADER ── */
   .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
     border-bottom: 1px solid var(--border);
-    background: var(--surface);
+    background: rgba(7, 9, 15, 0.85);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
   }
 
   .nav-inner {
-    max-width: 720px;
+    max-width: 900px;
     margin: 0 auto;
-    padding: 1rem 1.5rem;
+    padding: 0.85rem 1.5rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -85,81 +108,168 @@ const { title, description = 'Practical AI for software testers—prompts, tools
 
   .logo {
     font-weight: 700;
-    font-size: 1.25rem;
+    font-size: 1.15rem;
     color: var(--text);
     text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    letter-spacing: -0.01em;
   }
 
-  .logo:hover {
-    color: var(--accent);
+  .logo-icon {
+    font-size: 1.1rem;
   }
+
+  .logo:hover { color: var(--accent); text-decoration: none; }
 
   .nav-links {
     display: flex;
-    gap: 1.5rem;
+    gap: 0.25rem;
+    align-items: center;
   }
 
   .nav-links a {
     color: var(--muted);
     text-decoration: none;
     font-weight: 500;
+    font-size: 0.92rem;
+    padding: 0.4rem 0.85rem;
+    border-radius: 8px;
+    transition: color 0.15s, background 0.15s;
   }
 
   .nav-links a:hover {
-    color: var(--accent);
+    color: var(--text);
+    background: var(--surface);
+    text-decoration: none;
   }
 
+  .nav-links a.active {
+    color: var(--accent);
+    background: rgba(74, 222, 128, 0.08);
+  }
+
+  /* ── MAIN ── */
   .main {
     flex: 1;
-    max-width: 720px;
+    max-width: 900px;
     margin: 0 auto;
-    padding: 2rem 1.5rem;
+    padding: 2.5rem 1.5rem;
     width: 100%;
   }
 
+  /* ── FOOTER ── */
   .site-footer {
     border-top: 1px solid var(--border);
     padding: 1.5rem;
     text-align: center;
+  }
+
+  .footer-inner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
     color: var(--muted);
-    font-size: 0.9rem;
+    font-size: 0.88rem;
   }
 
-  a {
-    color: var(--accent);
+  .footer-logo {
+    font-weight: 600;
+    color: var(--muted2);
   }
 
-  a:hover {
-    text-decoration: underline;
-  }
+  /* ── TYPOGRAPHY ── */
+  a { color: var(--accent); }
+  a:hover { text-decoration: underline; }
+
+  h1, h2, h3, h4 { letter-spacing: -0.02em; line-height: 1.25; }
 
   code {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.9em;
+    font-size: 0.88em;
     background: var(--surface);
-    padding: 0.15em 0.4em;
-    border-radius: 4px;
-    border: 1px solid var(--border);
+    color: var(--accent2);
+    padding: 0.15em 0.45em;
+    border-radius: 5px;
+    border: 1px solid var(--border2);
   }
 
   pre {
     overflow-x: auto;
-    padding: 1rem;
-    border-radius: 8px;
-    border: 1px solid var(--border);
+    padding: 1.25rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--border2);
     background: var(--surface);
+    position: relative;
   }
 
   pre code {
     background: none;
     padding: 0;
     border: none;
+    color: var(--text);
+    font-size: 0.9rem;
   }
 
   blockquote {
     border-left: 3px solid var(--accent);
     margin: 1.5rem 0;
-    padding-left: 1rem;
-    color: var(--muted);
+    padding: 0.75rem 1.25rem;
+    background: rgba(74, 222, 128, 0.05);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    color: var(--muted2);
   }
+
+  /* ── TABLES ── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.93rem;
+    margin: 1.5rem 0;
+  }
+
+  th {
+    text-align: left;
+    padding: 0.65rem 1rem;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border2);
+    color: var(--muted2);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  td {
+    padding: 0.65rem 1rem;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+
+  /* ── BADGE util ── */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 0.25em 0.7em;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+
+  .badge-green  { background: rgba(74,222,128,0.12); color: var(--accent); border: 1px solid rgba(74,222,128,0.2); }
+  .badge-blue   { background: rgba(56,189,248,0.12); color: var(--accent2); border: 1px solid rgba(56,189,248,0.2); }
+  .badge-gray   { background: var(--surface2); color: var(--muted2); border: 1px solid var(--border2); }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
 </style>

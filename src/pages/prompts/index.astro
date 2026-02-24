@@ -1074,7 +1074,152 @@ Output as short sections. No real secrets.</code></pre>
       </article>
     </section>
 
-    <p class="note">More in the blog: <a href="/blog/prompts-that-work-for-test-cases">Prompts that work</a>, <a href="/blog/reviewing-ai-generated-tests">Reviewing AI-generated tests</a>, <a href="/blog/ai-test-data-generation">AI test data</a>, <a href="/blog/performance-testing-with-ai">Performance with AI</a>, <a href="/blog/ui-testing-with-ai">UI testing with AI</a>, <a href="/blog/jira-and-ai-for-testing">Jira + AI</a>, <a href="/blog/security-testing-with-ai">Security with AI</a>, <a href="/blog/api-testing-with-ai-deep-dive">More API testing with AI</a>.</p>
+      <h3 class="section-heading">ISTQB AI Testing</h3>
+
+      <article class="prompt-card">
+        <h2>AI quality characteristics checklist</h2>
+        <p>Map ISTQB quality characteristics to your AI feature and get one concrete test idea per characteristic.</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>We have an AI feature: [describe in 1–2 sentences—type of model, input, output].
+
+For each ISTQB AI quality characteristic below, suggest one concrete test idea and the metric or observable outcome to check:
+- Functional correctness (accuracy, precision, recall)
+- Robustness (noisy or unexpected input)
+- Fairness / bias (performance across groups)
+- Explainability (can we understand the decision?)
+- Performance efficiency (inference latency, throughput)
+- Security (prompt injection, adversarial, data poisoning)
+
+Output as table: Characteristic | Test idea | Metric or observable. One row per characteristic.</code></pre>
+        </div>
+      </article>
+
+      <article class="prompt-card">
+        <h2>Data quality checklist for ML datasets</h2>
+        <p>Get a pre-training data quality checklist covering completeness, balance, leakage, and labels.</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>We're about to use this dataset for [task: e.g. classification, NLP, regression]. Schema or description: [paste].
+
+Provide a data quality checklist with 8–10 checks covering:
+- Completeness (missing values, nulls)
+- Correctness (label accuracy, value ranges)
+- Balance (class distribution, skew)
+- Uniqueness (duplicates, train/test leakage)
+- Relevance (feature usefulness)
+- Timeliness (data freshness)
+
+For each check: what to verify | how (query/tool idea) | flag condition (what fails). Table.</code></pre>
+        </div>
+      </article>
+
+      <article class="prompt-card">
+        <h2>ML model bias test plan</h2>
+        <p>Design a bias testing approach for a classification or prediction model.</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>We have a [model type: e.g. loan approval, sentiment analysis, fraud detection] model. We want to test for bias.
+
+Suggest:
+1. Groups or slices to evaluate (protected attributes relevant to this use case)
+2. Fairness metrics to calculate (demographic parity, equalized odds, etc.) and acceptable gap
+3. How to structure a bias test report for stakeholders (what a "flag" looks like)
+4. One concrete test: which slice to compare and which metric to use
+
+Output as a short guide. Strategy only—no code.</code></pre>
+        </div>
+      </article>
+
+      <article class="prompt-card">
+        <h2>Behavioral test cases for ML (CheckList style)</h2>
+        <p>Generate minimum functionality, invariance, and directional behavioral tests for an ML model.</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>We have a [e.g. sentiment classifier / chatbot / recommendation model]. Core capability: [describe].
+
+Generate 5 behavioral test cases:
+1. Minimum functionality (basic inputs → correct output)
+2. Invariance (changing irrelevant input parts doesn't change output)
+3. Directional (changing one attribute changes output predictably)
+4. Edge case (empty, very long, or ambiguous input)
+5. Regression (specific input that must always work after retraining)
+
+For each: input example | expected output or property | how to verify. Table.</code></pre>
+        </div>
+      </article>
+
+      <article class="prompt-card">
+        <h2>Adversarial and robustness test cases</h2>
+        <p>Design adversarial, out-of-distribution, and safety test cases for an AI system.</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>We're testing a [describe AI feature: model type, input type, use case].
+
+Generate 8 adversarial/robustness test cases:
+- 2 out-of-distribution (inputs model likely wasn't trained on)
+- 2 boundary/edge (minimum valid, maximum valid, or ambiguous)
+- 2 adversarial (slight input change that might flip output or degrade quality)
+- 2 safety (inputs that might trigger harmful, biased, or incorrect output)
+
+For each: input description | expected behavior | failure signal. No harmful content.</code></pre>
+        </div>
+      </article>
+
+      <article class="prompt-card">
+        <h2>ML model acceptance thresholds</h2>
+        <p>Define pass/fail criteria for model performance before deployment.</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>Model type: [e.g. binary classifier, multi-class, regression]. Use case: [describe business context and cost of errors].
+
+Help define acceptance thresholds for model deployment:
+1. Which metrics to use (e.g. precision, recall, F1, AUC-ROC) and why for this use case
+2. Suggested threshold values with reasoning (e.g. "recall &gt;= 0.90 for fraud because false negatives are costly")
+3. Bias threshold: maximum acceptable performance gap between groups
+4. Latency threshold: inference time budget for this use case
+5. One regression rule: model must not perform worse than current version on [key slice]
+
+Output as a short criteria table. We'll use these as test pass/fail gates.</code></pre>
+        </div>
+      </article>
+
+      <article class="prompt-card">
+        <h2>AI monitoring test plan</h2>
+        <p>Design monitoring tests for a deployed ML model (drift, performance, alerts).</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>We're deploying an AI model to production: [describe model, input, output]. We want to monitor it.
+
+Suggest a monitoring test plan:
+1. Data drift: what to monitor (feature distributions), tool suggestions, alert threshold
+2. Prediction drift: output distribution shift—what to check and when to investigate
+3. Performance monitoring: if we have feedback labels, which metric to track and how often
+4. Latency and error rate: thresholds and alerting
+5. Retraining trigger: conditions that should trigger retraining or human review
+
+Output as table: What to monitor | How | Threshold/alert | Action on breach.</code></pre>
+        </div>
+      </article>
+
+      <article class="prompt-card">
+        <h2>LLM output evaluation rubric</h2>
+        <p>Get a rubric to evaluate and score LLM outputs for quality, accuracy, and safety.</p>
+        <div class="prompt-block">
+          <span class="prompt-label">Prompt</span>
+          <pre><code>We need to evaluate outputs from our LLM feature: [describe: chatbot, summarizer, code assistant, etc.].
+
+Create an evaluation rubric with 5–7 dimensions. For each:
+- Dimension name (e.g. Accuracy, Relevance, Safety, Tone, Completeness)
+- What it means for our use case
+- Score 1–5 definition (1=bad, 5=excellent)
+- One example of a score-1 and score-5 output
+
+Output as table. We'll use this for human evaluation and to create test cases.</code></pre>
+        </div>
+      </article>
+
+    <p class="note">Blog deep-dives: <a href="/blog/istqb-ai-testing-fundamentals">ISTQB AI Fundamentals</a>, <a href="/blog/istqb-ai-data-quality-bias">Data Quality &amp; Bias</a>, <a href="/blog/istqb-ai-model-testing">Model Testing &amp; Adversarial</a>, <a href="/blog/performance-testing-with-ai">Performance</a>, <a href="/blog/security-testing-with-ai">Security</a>, <a href="/blog/api-testing-with-ai-deep-dive">API</a>, <a href="/blog/jira-and-ai-for-testing">Jira</a>, <a href="/blog/ui-testing-with-ai">UI</a>.</p>
   </div>
 </BaseLayout>
 
